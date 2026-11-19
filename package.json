@@ -12,7 +12,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "@temporalio/activity": "^1.25.0",
     "@temporalio/client": "^1.25.0",
