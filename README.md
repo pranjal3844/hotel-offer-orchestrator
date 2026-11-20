@@ -33,3 +33,14 @@ Currently working
 ## How to Run
 
 Setup and execution instructions will be added after the application is implemented.
+
+## Backend Architecture
+
+I have divided the backend into different folders so that each part has its own responsibility.
+
+- **Routes:** Define the API endpoints.
+- **Controllers:** Handle incoming requests, validate input and send responses.
+- **Services:** Contain the main business logic.
+- **Types:** Define the structure of hotel data using TypeScript interfaces.
+
+

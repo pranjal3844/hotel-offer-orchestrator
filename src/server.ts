@@ -1,20 +1,21 @@
 
-import express from "express";
+import express, {type ErrorRequestHandler } from "express";
 import dotenv from "dotenv";
 
-// Load environment variables from .env
+import hotelRoutes from "./routes/hotelRoutes.js";
+
 dotenv.config();
 
-// Create Express application
 const app = express();
 
-// Middleware to parse incoming JSON
 app.use(express.json());
 
-// Get port from environment variables
 const PORT = Number(process.env.PORT) || 3000;
 
-// First endpoint
+// Main route
+app.use("/api", hotelRoutes);
+
+// Home endpoint
 app.get("/", (req, res) => {
     res.json({
         message: "Welcome to Hotel Offer Orchestrator API",
@@ -22,7 +23,7 @@ app.get("/", (req, res) => {
     });
 });
 
-// Health check endpoint
+// Health check
 app.get("/health", (req, res) => {
     res.status(200).json({
         status: "OK",
@@ -30,7 +31,23 @@ app.get("/health", (req, res) => {
     });
 });
 
-// Start the server
+// Central error-handling middleware
+const errorHandler: ErrorRequestHandler = (
+    err,
+    req,
+    res,
+    next
+) => {
+    console.error("Application error:", err);
+
+    res.status(500).json({
+        error: "Internal server error"
+    });
+};
+
+app.use(errorHandler);
+
+// Start server
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
