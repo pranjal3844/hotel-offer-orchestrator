@@ -3,6 +3,7 @@ import express, {type ErrorRequestHandler } from "express";
 import dotenv from "dotenv";
 
 import hotelRoutes from "./routes/hotelRoutes.js";
+import supplierRoutes from "./routes/supplierRoutes.js";
 
 dotenv.config();
 
@@ -14,6 +15,9 @@ const PORT = Number(process.env.PORT) || 3000;
 
 // Main route
 app.use("/api", hotelRoutes);
+
+// Mock supplier routes
+app.use("/", supplierRoutes);
 
 // Home endpoint
 app.get("/", (req, res) => {

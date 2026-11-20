@@ -44,3 +44,21 @@ I have divided the backend into different folders so that each part has its own 
 - **Types:** Define the structure of hotel data using TypeScript interfaces.
 
 
+
+## Mock Supplier APIs
+
+I have created two mock hotel suppliers inside the Express application.
+
+Both suppliers provide hotel information through separate GET endpoints.
+
+### Supplier A
+`GET /supplierA/hotels?city=delhi`
+
+### Supplier B
+`GET /supplierB/hotels?city=delhi`
+
+Both suppliers contain some common hotel names but offer different prices and commission percentages.
+
+I have also added a city filter so that the APIs return only hotels belonging to the requested city.
+
+These mock APIs will be used in the next stages to implement parallel execution, hotel comparison and deduplication using Temporal.
