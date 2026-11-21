@@ -1,0 +1,297 @@
+{
+  "info": {
+    "_postman_id": "2c90b245-9dca-48e3-8f0a-c1c38524d30d",
+    "name": "Hotel Offer Orchestrator API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56731124",
+    "_collection_link": "https://go.postman.co/collection/56731124-2c90b245-9dca-48e3-8f0a-c1c38524d30d?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Hotel API",
+      "item": [
+        {
+          "name": "Delhi Hotels",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response contains 5 unique hotels\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data).to.be.an(\"array\");\n    pm.expect(data).to.have.lengthOf(5);\n});\n\npm.test(\"Every hotel has required fields\", function () {\n    const data = pm.response.json();\n\n    data.forEach(hotel => {\n        pm.expect(hotel).to.have.property(\"name\");\n        pm.expect(hotel).to.have.property(\"price\");\n        pm.expect(hotel).to.have.property(\"supplier\");\n        pm.expect(hotel).to.have.property(\"commissionPct\");\n    });\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/hotels?city=delhi",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "hotels"
+              ],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "delhi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Price Filter",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Exactly 3 hotels returned\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data).to.have.lengthOf(3);\n});\n\npm.test(\"All hotels are within the price range\", function () {\n    const data = pm.response.json();\n\n    data.forEach(hotel => {\n        pm.expect(hotel.price).to.be.at.least(5000);\n        pm.expect(hotel.price).to.be.at.most(8000);\n    });\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/hotels?city=delhi&minPrice=5000&maxPrice=8000",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "hotels"
+              ],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "delhi"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "5000"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "8000"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "No Results",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"No hotels found\", function () {\n    pm.response.to.have.status(200);\n\n    const data = pm.response.json();\n\n    pm.expect(data).to.be.an(\"array\").that.is.empty;\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/hotels?city=jaipur",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "hotels"
+              ],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "jaipur"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Missing City",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request returns 400 Bad Request\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Error message is provided\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data).to.have.property(\"error\");\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/hotels",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "hotels"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Price",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request returns 400 Bad Request\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Error message is provided\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data).to.have.property(\"error\");\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/hotels?city=delhi&minPrice=abc&maxPrice=8000",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "hotels"
+              ],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "delhi"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "abc"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "8000"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Missing Max Price",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request returns 400 Bad Request\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Error message is provided\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data).to.have.property(\"error\");\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/hotels?city=delhi&minPrice=5000",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "hotels"
+              ],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "delhi"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "5000"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Range",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request returns 400 Bad Request\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Error message is provided\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data).to.have.property(\"error\");\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/hotels?city=delhi&minPrice=9000&maxPrice=5000",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "hotels"
+              ],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "delhi"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "9000"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "5000"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
