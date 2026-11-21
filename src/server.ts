@@ -27,48 +27,60 @@ app.get("/", (req, res) => {
     });
 });
 
-// Health check
-app.get("/health", (req, res) => {
-    res.status(200).json({
-        status: "OK",
-        message: "Hotel Offer Orchestrator is healthy"
+// Check the health of an individual supplier
+const checkSupplier = async (url: string): Promise<string> => {
+  try {
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(3000)
     });
+
+    return response.ok ? "healthy" : "unhealthy";
+  } catch {
+    return "unhealthy";
+  }
+};
+
+// Get the health status of both suppliers
+const getSupplierHealth = async () => {
+  const baseUrl = `http://localhost:${PORT}`;
+
+  const [supplierA, supplierB] = await Promise.all([
+    checkSupplier(`${baseUrl}/supplierA/hotels?city=delhi`),
+    checkSupplier(`${baseUrl}/supplierB/hotels?city=delhi`)
+  ]);
+
+  return {
+    supplierA,
+    supplierB,
+    allHealthy: supplierA === "healthy" && supplierB === "healthy"
+  };
+};
+
+// Main health endpoint
+app.get("/health", async (req, res) => {
+  const health = await getSupplierHealth();
+
+  res.status(health.allHealthy ? 200 : 503).json({
+    status: health.allHealthy ? "healthy" : "degraded",
+    suppliers: {
+      supplierA: health.supplierA,
+      supplierB: health.supplierB
+    }
+  });
 });
 
-
-// Check whether both mock suppliers are responding
+// Separate supplier health endpoint
 app.get("/health/suppliers", async (req, res) => {
-    const checkSupplier = async (url: string): Promise<string> => {
-        try {
-            const response = await fetch(url, {
-                signal: AbortSignal.timeout(3000)
-            });
+  const health = await getSupplierHealth();
 
-            return response.ok ? "healthy" : "unhealthy";
-        } catch {
-            return "unhealthy";
-        }
-    };
-
-    const baseUrl = `http://localhost:${PORT}`;
-
-    const [supplierA, supplierB] = await Promise.all([
-        checkSupplier(`${baseUrl}/supplierA/hotels?city=delhi`),
-        checkSupplier(`${baseUrl}/supplierB/hotels?city=delhi`)
-    ]);
-
-    const allHealthy =
-        supplierA === "healthy" && supplierB === "healthy";
-
-    res.status(allHealthy ? 200 : 503).json({
-        status: allHealthy ? "healthy" : "degraded",
-        suppliers: {
-            supplierA,
-            supplierB
-        }
-    });
+  res.status(health.allHealthy ? 200 : 503).json({
+    status: health.allHealthy ? "healthy" : "degraded",
+    suppliers: {
+      supplierA: health.supplierA,
+      supplierB: health.supplierB
+    }
+  });
 });
-
 
 // Central error-handling middleware
 const errorHandler: ErrorRequestHandler = (

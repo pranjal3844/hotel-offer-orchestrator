@@ -52,7 +52,7 @@ Temporal activity retries are configured with a maximum of 3 attempts.
 | GET | `/api/hotels?city=delhi` | Get the best hotel offers for a city |
 | GET | `/api/hotels?city=delhi&minPrice=5000&maxPrice=8000` | Filter hotels by price |
 | GET | `/` | Welcome message |
-| GET | `/health` | Check application health |
+| GET | `/health` | Checks application and both supplier health statuses. |
 | GET | `/health/suppliers` | Check both supplier endpoints |
 
 ### Mock Supplier APIs
