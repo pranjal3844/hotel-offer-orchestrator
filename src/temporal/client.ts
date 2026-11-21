@@ -1,8 +1,15 @@
-
 import "dotenv/config";
 
-import { Client, Connection } from "@temporalio/client";
+import {
+  Client,
+  Connection,
+  WorkflowFailedError
+} from "@temporalio/client";
+
+import { ApplicationFailure } from "@temporalio/common";
 import { randomUUID } from "node:crypto";
+
+import { SuppliersUnavailableError } from "../errors/SuppliersUnavailableError.js";
 
 // Store the client so we can reuse the same connection
 let temporalClient: Client | undefined;
@@ -27,11 +34,24 @@ async function getTemporalClient(): Promise<Client> {
 export async function runHotelWorkflow(city: string) {
   const client = await getTemporalClient();
 
-  const result = await client.workflow.execute("hotelWorkflow", {
-    workflowId: `hotel-offers-${city}-${randomUUID()}`,
-    taskQueue: process.env.HOTEL_TASK_QUEUE ?? "hotel-task-queue",
-    args: [city]
-  });
+  try {
+    const result = await client.workflow.execute("hotelWorkflow", {
+      workflowId: `hotel-offers-${city}-${randomUUID()}`,
+      taskQueue: process.env.HOTEL_TASK_QUEUE ?? "hotel-task-queue",
+      args: [city]
+    });
 
-  return result;
+    return result;
+
+  } catch (error) {
+    if (
+      error instanceof WorkflowFailedError &&
+      error.cause instanceof ApplicationFailure &&
+      error.cause.type === "BOTH_SUPPLIERS_UNAVAILABLE"
+    ) {
+      throw new SuppliersUnavailableError();
+    }
+
+    throw error;
+  }
 }

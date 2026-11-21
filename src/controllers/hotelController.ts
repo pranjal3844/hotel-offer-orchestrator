@@ -1,4 +1,4 @@
-
+import { SuppliersUnavailableError } from "../errors/SuppliersUnavailableError.js";
 import type { Request, Response, NextFunction } from "express";
 import { getHotelsByCity } from "../services/hotelService.js";
 
@@ -77,6 +77,12 @@ export async function getHotels(
     return res.status(200).json(hotels);
 
   } catch (error) {
+    if (error instanceof SuppliersUnavailableError) {
+      return res.status(503).json({
+        error: error.message
+      });
+    }
+
     next(error);
   }
 }

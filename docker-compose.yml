@@ -38,6 +38,10 @@ services:
       TEMPORAL_ADDRESS: temporal:7233
       TEMPORAL_NAMESPACE: default
       HOTEL_TASK_QUEUE: hotel-task-queue
+      SUPPLIER_B_ENABLED: "true"
+      SUPPLIER_A_ENABLED: "true"
+      
+
     depends_on:
       redis:
         condition: service_healthy

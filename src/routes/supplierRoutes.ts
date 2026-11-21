@@ -23,11 +23,22 @@ router.get("/supplierA/hotels", (req, res) => {
         return;
     }
 
+    if (process.env.SUPPLIER_A_ENABLED === "false") {
+        res.status(503).json({
+            error: "Supplier A is temporarily unavailable"
+        });
+        return;
+    }
+
+
+
     const hotels = getSupplierAHotels(city);
 
     res.status(200).json(hotels);
 
 });
+
+
 
 // Supplier B API
 router.get("/supplierB/hotels", (req, res) => {
@@ -37,6 +48,13 @@ router.get("/supplierB/hotels", (req, res) => {
     if (typeof city !== "string" || city.trim() === "") {
         res.status(400).json({
             error: "Please provide a valid city"
+        });
+        return;
+    }
+
+    if (process.env.SUPPLIER_B_ENABLED === "false") {
+        res.status(503).json({
+            error: "Supplier B is temporarily unavailable"
         });
         return;
     }
