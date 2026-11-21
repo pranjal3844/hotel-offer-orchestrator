@@ -1,14 +1,10 @@
-import type { SupplierHotel } from "../types/hotel.js";
-import { runHotelWorkflow } from "../temporal/client.js";
 
-interface SupplierResults {
-  supplierAHotels: SupplierHotel[];
-  supplierBHotels: SupplierHotel[];
-}
+import type { HotelOffer } from "../types/hotel.js";
+import { runHotelWorkflow } from "../temporal/client.js";
 
 export async function getHotelsByCity(
   city: string
-): Promise<SupplierResults> {
+): Promise<HotelOffer[]> {
   const result = await runHotelWorkflow(city);
 
   return result;
