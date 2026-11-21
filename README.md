@@ -189,7 +189,7 @@ hotel-offer-orchestrator/
 Clone the repository:
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/pranjal3844/hotel-offer-orchestrator.git
 cd hotel-offer-orchestrator
 ```
 
