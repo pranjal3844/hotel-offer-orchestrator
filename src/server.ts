@@ -1,4 +1,4 @@
-
+import "./config/redis.js";
 import express, {type ErrorRequestHandler } from "express";
 import dotenv from "dotenv";
 
