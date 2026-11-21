@@ -1,15 +1,16 @@
+import type { SupplierHotel } from "../types/hotel.js";
+import { runHotelWorkflow } from "../temporal/client.js";
 
-import type { HotelOffer } from "../types/hotel.js";
-
-// Fetch hotels for a particular city
-export async function getHotelsByCity(
-    city: string
-): Promise<HotelOffer[]> {
-
-    console.log(`Fetching hotels for city: ${city}`);
-
-    // Temporary empty result.
-    // Actual supplier integration will be implemented later.
-
-    return [];
+interface SupplierResults {
+  supplierAHotels: SupplierHotel[];
+  supplierBHotels: SupplierHotel[];
 }
+
+export async function getHotelsByCity(
+  city: string
+): Promise<SupplierResults> {
+  const result = await runHotelWorkflow(city);
+
+  return result;
+}
+
