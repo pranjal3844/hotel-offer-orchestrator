@@ -1,7 +1,8 @@
 
 import type { SupplierHotel } from "../types/hotel.js";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL =
+  process.env.SUPPLIER_API_URL ?? "http://localhost:3000";
 
 // Activity 1: Fetch hotels from Supplier A
 export async function fetchSupplierAHotels(

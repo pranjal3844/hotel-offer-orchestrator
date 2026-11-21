@@ -1,6 +1,6 @@
 
 # Use Node.js 24 as the base image
-FROM node:24-alpine
+FROM node:24-bookworm-slim
 
 # Set the working directory inside the container
 WORKDIR /app
